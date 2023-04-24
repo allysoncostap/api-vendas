@@ -3,6 +3,8 @@ package com.allyson.rest.controller;
 
 import com.allyson.domain.entity.ItemPedido;
 import com.allyson.domain.entity.Pedido;
+import com.allyson.domain.enums.StatusPedido;
+import com.allyson.rest.dto.AtualizarStatusPedidoDTO;
 import com.allyson.rest.dto.InformacaoItemPedidoDTO;
 import com.allyson.rest.dto.InformacoesPedidoDTO;
 import com.allyson.rest.dto.PedidoDTO;
@@ -20,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 
 @RestController
@@ -46,6 +49,17 @@ private PedidoService service;
                 .orElseThrow(()-> new ResponseStatusException(NOT_FOUND,"Pedido nao encontrado"));
 }
 
+
+@PatchMapping("{id}")
+@ResponseStatus(NO_CONTENT)
+public void updateStatus(@PathVariable Integer id, @RequestBody AtualizarStatusPedidoDTO atualizarStatusPedidoDTO){
+
+        String novoStatus = atualizarStatusPedidoDTO.getNovoStatus();
+        service.atualizaStatus(id, StatusPedido.valueOf(novoStatus));
+}
+
+
+
 private InformacoesPedidoDTO converter(Pedido pedido){
  return  InformacoesPedidoDTO
         .builder()
@@ -54,6 +68,7 @@ private InformacoesPedidoDTO converter(Pedido pedido){
         .cpf(pedido.getCliente().getCpf())
         .nomeCliente(pedido.getCliente().getNome())
         .total(pedido.getTotal())
+         .status(pedido.getStatus().name())
         .items(converter(pedido.getItens()))
         .build();
 }

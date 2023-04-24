@@ -1,6 +1,7 @@
 package com.allyson.rest.controller;
 
 
+import com.allyson.exception.PedidoNaoEncontradoException;
 import com.allyson.rest.ApiErrors;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,5 +17,11 @@ public class ApplicationControllerAvice {
         return  new ApiErrors(mensagemErro);
     }
 
+
+    @ExceptionHandler(PedidoNaoEncontradoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrors handlePedidoNotFoundException(PedidoNaoEncontradoException pedidoNaoEncontradoException){
+return new ApiErrors(pedidoNaoEncontradoException.getMessage());
+    }
 
 }

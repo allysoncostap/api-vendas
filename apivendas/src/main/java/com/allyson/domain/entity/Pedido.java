@@ -1,5 +1,6 @@
 package com.allyson.domain.entity;
 
+import com.allyson.domain.enums.StatusPedido;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,10 @@ public class Pedido {
     private LocalDate dataPedido;
     @Column(name = "total", length = 20, precision = 20 ,scale = 2)
     private BigDecimal total;
+
+    @Column(name = "status")
+@Enumerated(EnumType.STRING)
+    private StatusPedido status;
     @OneToMany(mappedBy = "pedido" )
     private List<ItemPedido> itens;
 

@@ -66,6 +66,11 @@ public class ClienteServiceImp  implements ClienteService {
     }
 
     /**
+     * Estava tentando convernter as set e a lista ,
+     *
+     *
+     *
+
     @Override
     public void update(Integer id, ClienteDTO clienteDTO) {Cliente cliente = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado"));

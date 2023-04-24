@@ -5,10 +5,12 @@ import com.allyson.domain.entity.Cliente;
 import com.allyson.domain.entity.ItemPedido;
 import com.allyson.domain.entity.Pedido;
 import com.allyson.domain.entity.Produto;
+import com.allyson.domain.enums.StatusPedido;
 import com.allyson.domain.repository.ClientesRepository;
 import com.allyson.domain.repository.ItemsPedidosRepository;
 import com.allyson.domain.repository.PedidosRepository;
 import com.allyson.domain.repository.ProdutosRepository;
+import com.allyson.exception.PedidoNaoEncontradoException;
 import com.allyson.rest.dto.ItemPedidoDTO;
 import com.allyson.rest.dto.PedidoDTO;
 import com.allyson.service.PedidoService;
@@ -43,6 +45,7 @@ public class PedidosServiceImpl implements PedidoService {
         pedido.setTotal(dto.getTotal());
         pedido.setDataPedido(LocalDate.now());
         pedido.setCliente(cliente);
+        pedido.setStatus(StatusPedido.REALIZADO);
 
         List<ItemPedido> itemPedido = converterItem(pedido, dto.getItems());
         pedidosRepository.save(pedido);
@@ -56,6 +59,16 @@ public class PedidosServiceImpl implements PedidoService {
     @Override
     public Optional<Pedido> obterPedidoCompleto(Integer id) {
         return pedidosRepository.findByIdFetchItens(id);
+    }
+
+    @Override
+    @Transactional
+    public void atualizaStatus(Integer id, StatusPedido statusPedido) {
+        pedidosRepository.findById(id).map( pedido ->{
+                pedido.setStatus(statusPedido);
+        return pedidosRepository.save(pedido);
+
+    }).orElseThrow(() -> new PedidoNaoEncontradoException());
     }
 
 
